@@ -1,12 +1,19 @@
-
 services:
-###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+      - "5432:5432"
 
-###> symfony/mailer ###
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    depends_on:
+      - database
+
+  ###> symfony/mailer ###
   mailer:
     image: axllent/mailpit
     ports:
