@@ -37,6 +37,12 @@ class Article
     #[ORM\ManyToOne(inversedBy: 'articles')]
     private ?Category $category = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $publishedAt = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $picture = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -135,5 +141,34 @@ class Article
         $this->category = $category;
 
         return $this;
+    }
+
+    public function getPublishedAt(): ?\DateTimeImmutable
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(\DateTimeImmutable $publishedAt): static
+    {
+        $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(string $picture): static
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->title;
     }
 }

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Modifier mon profil</h3>
+                    </div>
+                    <div class="card-body">
+                        {% for flash in app.flashes('success') %}
+                            <div class="alert alert-success">{{ flash }}</div>
+                        {% endfor %}
+                        {{ form_start(form) }}
+                        {{ form_row(form.firstName) }}
+                        {{ form_row(form.lastName) }}
+                        {{ form_row(form.username) }}
+                        {{ form_row(form.profilePicture) }}
+                        <button type="submit" class="btn btn-primary w-100">Sauvegarder</button>
+                        {{ form_end(form) }}
+                        <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary w-100 mt-2">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
