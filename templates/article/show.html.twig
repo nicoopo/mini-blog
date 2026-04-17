@@ -43,17 +43,16 @@
     <hr>
 
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-<h4>Laisser un commentaire</h4>
+        <h4>Laisser un commentaire</h4>
 
-    {% for flash in app.flashes('success') %}
-    <div class="alert alert-success">{{ flash }}</div>
-    {% endfor %}
+        {% for flash in app.flashes('success') %}
+        <div class="alert alert-success">{{ flash }}</div>
+        {% endfor %}
 
-    {{ form_start(commentForm) }}
-    {{ form_row(commentForm.content) }}
-    <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
-    {{ form_end(commentForm) }}
-
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.content) }}
+        <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
+        {{ form_end(commentForm) }}
     {% else %}
         <p>
             <a href="{{ path('app_login') }}">Connectez-vous</a> pour laisser un commentaire.
