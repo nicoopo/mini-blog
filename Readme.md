@@ -4,23 +4,23 @@ Projet réalisé dans le cadre d'un TP IPSSI — Création d'un mini blog avec S
 
 ---
 
-## 📋 Sommaire
+## Table des matières
 
-- [Technologies](#technologies)
-- [Prérequis](#prérequis)
-- [Installation](#installation)
-- [Structure du projet](#structure-du-projet)
-- [Base de données](#base-de-données)
-- [Fonctionnalités](#fonctionnalités)
-- [Rôles et accès](#rôles-et-accès)
-- [Routes principales](#routes-principales)
-- [EasyAdmin](#easyadmin)
-- [Fixtures](#fixtures)
-- [Accès utiles](#accès-utiles)
+1. [Technologies](#1-technologies)
+2. [Prérequis](#2-prérequis)
+3. [Installation](#3-installation)
+4. [Structure du projet](#4-structure-du-projet)
+5. [Base de données](#5-base-de-données)
+6. [Fonctionnalités](#6-fonctionnalités)
+7. [Rôles et accès](#7-rôles-et-accès)
+8. [Routes principales](#8-routes-principales)
+9. [EasyAdmin](#9-easyadmin)
+10. [Fixtures](#10-fixtures)
+11. [Accès utiles](#11-accès-utiles)
 
 ---
 
-## 🛠 Technologies
+## 1. Technologies
 
 - **Symfony 8** — Framework PHP
 - **PHP 8.4** — via Docker
@@ -33,7 +33,7 @@ Projet réalisé dans le cadre d'un TP IPSSI — Création d'un mini blog avec S
 
 ---
 
-## ✅ Prérequis
+## 2. Prérequis
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé
 - [Git](https://git-scm.com/) installé
@@ -41,7 +41,7 @@ Projet réalisé dans le cadre d'un TP IPSSI — Création d'un mini blog avec S
 
 ---
 
-## 🚀 Installation
+## 3. Installation
 
 ### 1. Cloner le projet
 
@@ -83,7 +83,7 @@ docker compose exec php php bin/console doctrine:database:create
 docker compose exec php php bin/console doctrine:migrations:migrate
 ```
 
-### 6. (Optionnel) Créer un compte administrateur
+### 6. Optionnel — Créer un compte administrateur
 
 ```bash
 docker compose exec php php bin/console doctrine:query:sql \
@@ -92,7 +92,7 @@ docker compose exec php php bin/console doctrine:query:sql \
 
 ---
 
-## 📁 Structure du projet
+## 4. Structure du projet
 
 ```
 mini-blog/
@@ -109,183 +109,90 @@ mini-blog/
 │   │   └── vhost.conf
 │   └── php/
 │       └── Dockerfile
-├── migrations/              # Migrations Doctrine
 ├── src/
 │   ├── Controller/
-│   │   ├── Admin/           # Controllers EasyAdmin
-│   │   ├── ArticleController.php
-│   │   ├── HomeController.php
-│   │   ├── ProfileController.php
-│   │   ├── RegistrationController.php
-│   │   └── SecurityController.php
-│   ├── DataFixtures/        # Fixtures de test
-│   │   ├── UserFixtures.php
-│   │   ├── CategoryFixtures.php
-│   │   ├── ArticleFixtures.php
-│   │   └── CommentFixtures.php
 │   ├── Entity/
-│   │   ├── Article.php
-│   │   ├── Category.php
-│   │   ├── Comment.php
-│   │   └── User.php
 │   ├── Form/
-│   │   ├── CommentType.php
-│   │   ├── ProfileFormType.php
-│   │   └── RegistrationFormType.php
-│   ├── Repository/
-│   └── Security/
-│       └── AuthAuthenticator.php
+│   └── Repository/
 ├── templates/
-│   ├── admin/
-│   ├── article/
-│   ├── home/
-│   ├── profile/
-│   ├── registration/
-│   ├── security/
-│   └── base.html.twig
+├── migrations/
+├── .env
 ├── compose.yaml
-├── compose.override.yaml
-└── importmap.php
+└── compose.override.yaml
 ```
 
 ---
 
-## 🗄 Base de données
+## 5. Base de données
 
-### Entités
-
-#### User
-| Champ | Type | Description |
-|---|---|---|
-| id | integer | Identifiant unique |
-| email | string | Adresse e-mail (unique) |
-| password | string | Mot de passe haché |
-| roles | array | Rôles (ROLE_USER, ROLE_ADMIN) |
-| firstName | string | Prénom |
-| lastName | string | Nom |
-| username | string | Nom d'utilisateur |
-| profilePicture | string | URL photo de profil (nullable) |
-| isActive | boolean | Compte actif ou non |
-| createdAt | datetime | Date de création |
-| updatedAt | datetime | Date de mise à jour (nullable) |
-
-#### Article
-| Champ | Type | Description |
-|---|---|---|
-| id | integer | Identifiant unique |
-| title | string | Titre |
-| content | text | Contenu |
-| picture | string | URL image (nullable) |
-| createdAt | datetime | Date de création |
-| publishedAt | datetime | Date de publication (nullable) |
-| author | ManyToOne → User | Auteur |
-| category | ManyToOne → Category | Catégorie (nullable) |
-
-#### Category
-| Champ | Type | Description |
-|---|---|---|
-| id | integer | Identifiant unique |
-| name | string | Nom de la catégorie |
-| description | text | Description (nullable) |
-
-#### Comment
-| Champ | Type | Description |
-|---|---|---|
-| id | integer | Identifiant unique |
-| content | text | Contenu du commentaire |
-| createdAt | datetime | Date de création |
-| isApproved | boolean | Approuvé ou non |
-| status | string | Statut : pending, approved, rejected (nullable) |
-| author | ManyToOne → User | Auteur |
-| article | ManyToOne → Article | Article associé |
+| Entité | Description |
+|--------|-------------|
+| `User` | Utilisateurs du blog |
+| `Article` | Articles publiés |
+| `Category` | Catégories des articles |
+| `Comment` | Commentaires sur les articles |
 
 ---
 
-## ⚙️ Fonctionnalités
+## 6. Fonctionnalités
 
-### Authentification
-- Inscription avec email, mot de passe, prénom, nom, username
-- Connexion par email/mot de passe
-- Déconnexion
-- Remember me (7 jours)
-
-### Partie publique (Visiteur)
-- Page d'accueil avec liste des articles
-- Page détail d'un article avec ses commentaires approuvés
-- Invitation à se connecter pour commenter
-
-### Partie connectée (ROLE_USER)
-- Toutes les pages publiques
-- Ajout de commentaires sur un article (soumis en attente de validation)
-- Consultation et modification du profil personnel
-
-### Administration (ROLE_ADMIN)
-- Dashboard EasyAdmin complet
-- CRUD Articles (créer, modifier, supprimer)
-- CRUD Catégories
-- CRUD Utilisateurs (activer/désactiver)
-- Modération des commentaires (approuver/refuser)
+- Inscription et connexion des utilisateurs
+- Création, modification et suppression d'articles
+- Système de catégories
+- Commentaires sur les articles
+- Interface d'administration EasyAdmin
+- Envoi d'emails (Mailpit en dev)
 
 ---
 
-## 🔐 Rôles et accès
+## 7. Rôles et accès
 
-| URL | Visiteur | ROLE_USER | ROLE_ADMIN |
-|---|---|---|---|
-| `/` | ✅ | ✅ | ✅ |
-| `/article/{id}` | ✅ (lecture) | ✅ (+ commenter) | ✅ |
-| `/login` | ✅ | ✅ | ✅ |
-| `/register` | ✅ | ✅ | ✅ |
-| `/profile` | ❌ | ✅ | ✅ |
-| `/profile/edit` | ❌ | ✅ | ✅ |
-| `/admin` | ❌ | ❌ | ✅ |
-| `/admin/article` | ❌ | ❌ | ✅ |
-| `/admin/user` | ❌ | ❌ | ✅ |
-| `/admin/comment` | ❌ | ❌ | ✅ |
-| `/admin/category` | ❌ | ❌ | ✅ |
+| Rôle | Accès |
+|------|-------|
+| `ROLE_USER` | Lecture des articles, ajout de commentaires |
+| `ROLE_ADMIN` | Accès complet + interface EasyAdmin |
 
 ---
 
-## 🗺 Routes principales
+## 8. Routes principales
+
+| Route | Méthode | Description |
+|-------|---------|-------------|
+| `/` | GET | Page d'accueil |
+| `/article/{id}` | GET | Détail d'un article |
+| `/article/new` | GET/POST | Créer un article |
+| `/article/{id}/edit` | GET/POST | Modifier un article |
+| `/article/{id}/delete` | POST | Supprimer un article |
+| `/login` | GET/POST | Connexion |
+| `/register` | GET/POST | Inscription |
+| `/logout` | GET | Déconnexion |
+| `/admin` | GET | Interface EasyAdmin |
+
+---
+
+## 9. EasyAdmin
+
+L'interface d'administration est accessible à l'adresse :
 
 ```
-GET  /                        app_home
-GET  /article/{id}            app_article_show
-GET  /login                   app_login
-GET  /logout                  app_logout
-GET  /register                app_register
-GET  /profile                 app_profile
-GET  /profile/edit            app_profile_edit
-GET  /admin                   admin (EasyAdmin dashboard)
-GET  /admin/article           admin_article_index
-GET  /admin/user              admin_user_index
-GET  /admin/comment           admin_comment_index
-GET  /admin/category          admin_category_index
+http://localhost:8080/admin
 ```
 
----
+Elle permet de gérer :
 
-## 🖥 EasyAdmin
-
-L'interface d'administration est accessible à `/admin` uniquement pour les utilisateurs avec le rôle `ROLE_ADMIN`.
-
-Les CrudControllers sont dans `src/Controller/Admin/` :
-- `ArticleCrudController.php`
-- `CategoryCrudController.php`
-- `CommentCrudController.php`
-- `UserCrudController.php`
-- `DashboardController.php`
+- Les **utilisateurs** (rôles, emails)
+- Les **articles** (contenu, catégorie, auteur)
+- Les **catégories**
+- Les **commentaires**
 
 ---
 
-## 🧪 Fixtures
-
-Les fixtures permettent de pré-remplir la base de données avec des données de test.
+## 10. Fixtures
 
 ### Fichiers disponibles
 
 | Fichier | Groupe | Contenu |
-|---|---|---|
+|---------|--------|---------|
 | `UserFixtures.php` | `user` | 1 admin + 5 utilisateurs |
 | `CategoryFixtures.php` | `category` | 5 catégories |
 | `ArticleFixtures.php` | `article` | 10 articles |
@@ -294,58 +201,50 @@ Les fixtures permettent de pré-remplir la base de données avec des données de
 ### Charger toutes les fixtures
 
 ```bash
-# ⚠️ Supprime et recrée toutes les données
 docker compose exec php php bin/console doctrine:fixtures:load --no-interaction
 ```
 
-### Charger groupe par groupe (sans écraser les données existantes)
+### Charger groupe par groupe
 
 ```bash
-# 1. Users en premier (requis par les autres)
 docker compose exec php php bin/console doctrine:fixtures:load --group=user --append
-
-# 2. Catégories
 docker compose exec php php bin/console doctrine:fixtures:load --group=category --append
-
-# 3. Articles (dépend de user + category)
 docker compose exec php php bin/console doctrine:fixtures:load --group=article --append
-
-# 4. Commentaires (dépend de user + article)
 docker compose exec php php bin/console doctrine:fixtures:load --group=comment --append
 ```
 
 ### Comptes de test disponibles
 
-| Email | Mot de passe | Rôle |
-|---|---|---|
-| `admin@blog.com` | `password` | ROLE_ADMIN |
-| `user0@blog.com` | `password` | ROLE_USER |
-| `user1@blog.com` | `password` | ROLE_USER |
-| `user2@blog.com` | `password` | ROLE_USER |
-| `user3@blog.com` | `password` | ROLE_USER |
-| `user4@blog.com` | `password` | ROLE_USER |
+| Email | Mot de passe  | Rôle |
+|-------|---------------|------|
+| `admin@blog.com` | `admin123`    | ROLE_ADMIN |
+| `user0@blog.com` | `password123` | ROLE_USER |
+| `user1@blog.com` | `password123` | ROLE_USER |
+| `user2@blog.com` | `password123` | ROLE_USER |
+| `user3@blog.com` | `password123` | ROLE_USER |
+| `user4@blog.com` | `password123` | ROLE_USER |
 
 ---
 
-## 🌐 Accès utiles
+## 11. Accès utiles
 
 | Service | URL |
-|---|---|
+|---------|-----|
 | Application | http://localhost:8080 |
 | pgAdmin | http://localhost:8081 |
-| pgAdmin login | admin@admin.com / admin |
 | Mailpit | http://localhost:8025 |
 
-### Connexion pgAdmin → PostgreSQL
-- Host : `database`
-- Port : `5432`
-- Database : `app`
-- Username : `app`
-- Password : `!ChangeMe!`
+### Connexion pgAdmin vers PostgreSQL
+
+- **Host** : `database`
+- **Port** : `5432`
+- **Database** : `app`
+- **Username** : `app`
+- **Password** : `!ChangeMe!`
 
 ---
 
-## 🐳 Commandes Docker utiles
+## Commandes Docker utiles
 
 ```bash
 # Démarrer les conteneurs
@@ -372,7 +271,8 @@ docker compose exec php php bin/console debug:router
 
 ---
 
-## 👨‍💻 Auteur
+## Auteur
+
 Nicolas Cataluna  
 Projet réalisé dans le cadre du TP IPSSI — Symfony Mini Blog  
 Date : Avril 2026
